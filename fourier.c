@@ -25,6 +25,48 @@ void nft_inverse(double complex t[MAX_SIZE], double complex s[MAX_SIZE], int n) 
 }
 
 void fft(double complex s[MAX_SIZE], double complex t[MAX_SIZE], int n, int sign) {
+
+    
+    // acho que a bse vai ser pra quando n=1 pq ao dividir por 2 vai dar zero
+    
+    if (n==1){
+        return;
+
+    }
+
+    
+    // dividir a entrada original em partes menores
+
+    double complex sp[n/2];
+    double complex si[n/2];
+    int p = 0;
+    int i = 0;
+    for (int e=0; e<MAX_SIZE; e++){
+        if (e%2==0){
+            sp[p] = s[e];
+            p++;
+        }
+        else{
+            si[i]= s[e];
+            i++;
+        }
+    }
+
+    // resolver recursivamente o problema de cada parte
+    double complex tp[n/2];
+    double complex ti[n/2];
+    fft(sp, tp, n/2, -1);
+    fft(si, ti, n/2, -1);
+    // depois de chamar as recursivas não sei como aproveitar
+    
+    // combinar a solucao para resolver o problema para a entreda original
+
+    for (int k= 0; k<n/2; k++){
+        t[k]+= tp[k] + ti[k]*cexp(sign * 2* PI * k * I / n);
+    }
+
+ 
+
 }
 
 void fft_forward(double complex s[MAX_SIZE], double complex t[MAX_SIZE], int n) {
