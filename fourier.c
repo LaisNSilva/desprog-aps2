@@ -29,8 +29,9 @@ void fft(double complex s[MAX_SIZE], double complex t[MAX_SIZE], int n, int sign
     
     // acho que a bse vai ser pra quando n=1 pq ao dividir por 2 vai dar zero
     
-    if (n==1){
+    if (n==0){
         return;
+        
 
     }
 
@@ -41,7 +42,7 @@ void fft(double complex s[MAX_SIZE], double complex t[MAX_SIZE], int n, int sign
     double complex si[n/2];
     int p = 0;
     int i = 0;
-    for (int e=0; e<MAX_SIZE; e++){
+    for (int e=0; e<n; e++){
         if (e%2==0){
             sp[p] = s[e];
             p++;
@@ -56,7 +57,9 @@ void fft(double complex s[MAX_SIZE], double complex t[MAX_SIZE], int n, int sign
     double complex tp[n/2];
     double complex ti[n/2];
     fft(sp, tp, n/2, -1);
+    tp[n/2-1]+= 0+ sp[n/2-1]*cexp(sign * 2 * PI * n/2-1 * n/2-1 * I / n);
     fft(si, ti, n/2, -1);
+    ti[n/2-1]+= 0+ si[n/2-1]*cexp(sign * 2 * PI * n/2-1 * n/2-1 * I / n);
     // depois de chamar as recursivas não sei como aproveitar
     
     // combinar a solucao para resolver o problema para a entreda original
@@ -64,9 +67,6 @@ void fft(double complex s[MAX_SIZE], double complex t[MAX_SIZE], int n, int sign
     for (int k= 0; k<n/2; k++){
         t[k]+= tp[k] + ti[k]*cexp(sign * 2* PI * k * I / n);
     }
-
- 
-
 }
 
 void fft_forward(double complex s[MAX_SIZE], double complex t[MAX_SIZE], int n) {
