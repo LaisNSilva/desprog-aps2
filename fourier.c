@@ -29,43 +29,43 @@ void fft(double complex s[MAX_SIZE], double complex t[MAX_SIZE], int n, int sign
     
     // acho que a bse vai ser pra quando n=1 pq ao dividir por 2 vai dar zero
     
-    if (n==0){
+    if (n == 1){
+        t[0] = s[0]*cexp(sign * 2 * PI * 0 * I / n);
         return;
-        
-
     }
 
     
     // dividir a entrada original em partes menores
 
-    double complex sp[n/2];
-    double complex si[n/2];
+    double complex sp[n/2+1];
+    double complex si[n/2+1];
     int p = 0;
     int i = 0;
-    for (int e=0; e<n; e++){
-        if (e%2==0){
+    for (int e = 0; e <= n+1; e++){
+        if (e%2 == 0){
             sp[p] = s[e];
             p++;
         }
-        else{
+        else {
             si[i]= s[e];
             i++;
         }
     }
 
     // resolver recursivamente o problema de cada parte
-    double complex tp[n/2];
-    double complex ti[n/2];
-    fft(sp, tp, n/2, -1);
-    tp[n/2-1]+= 0+ sp[n/2-1]*cexp(sign * 2 * PI * n/2-1 * n/2-1 * I / n);
-    fft(si, ti, n/2, -1);
-    ti[n/2-1]+= 0+ si[n/2-1]*cexp(sign * 2 * PI * n/2-1 * n/2-1 * I / n);
+    double complex tp[n/2+1];
+    double complex ti[n/2+1];
+    fft(sp, tp, n/2, sign);
+    tp[n/2-1]+= 0+ sp[n/2-1]*cexp(sign * 2 * PI * n/2-1 * I / n);
+    fft(si, ti, n/2, sign);
+    ti[n/2-1]+= 0+ si[n/2-1]*cexp(sign * 2 * PI * n/2-1 * I / n);
     // depois de chamar as recursivas não sei como aproveitar
     
     // combinar a solucao para resolver o problema para a entreda original
 
     for (int k= 0; k<n/2; k++){
-        t[k]+= tp[k] + ti[k]*cexp(sign * 2* PI * k * I / n);
+        t[k] += tp[k] + ti[k]*cexp(sign * 2* PI * k * I / n);
+        t[k+n/2] += tp[k] - ti[k]*cexp(sign * 2* PI * k * I / n);
     }
 }
 
